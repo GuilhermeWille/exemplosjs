@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ordenando com JS e DOM</title>
+    
+    <script src="ordenando.js"></script>
+    
+    <style>
+        /* Estilização mínima para a página parecer com o exemplo */
+        body { font-family: sans-serif; padding: 20px; }
+        input, button, select { padding: 8px; margin: 5px; }
+        ul { border: 1px solid #ccc; padding: 10px; min-height: 50px; }
+        li { list-style-type: none; background-color: #f4f4f4; margin: 5px; padding: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>Ordenação de Valores</h1>
+
+    <input type="number" id="valor" placeholder="Digite um número">
+    
+    <button onclick="add()">Adicionar</button>
+
+    <select id="algoritmo">
+        <option value="bubble">Bubble Sort</option>
+        <option value="selection">Selection Sort</option>
+        <option value="quick">Quick Sort</option>
+    </select>
+
+    <button onclick="ordenar()">Ordenar</button>
+    
+    <button onclick="misturar()">Misturar</button>
+
+    <ul id="valores">
+        </ul>
+
+    <script>
+        /**
+         * Função auxiliar para ler os 'li' da lista UL 
+         * e converter para um vetor de números.
+         */
+        function obterVetorDaLista() {
+            const listaUI = document.getElementById('valores');
+            const vetor = [];
+            
+            // O 'children' é uma HTMLCollection, não um Array.
+            // Precisamos iterar sobre ele.
+            for (const item of listaUI.children) {
+                // Usamos parseInt para converter o texto para número.
+                // eval() não é recomendado por segurança.
+                vetor.push(parseInt(item.innerHTML, 10));
+            }
+            return vetor;
+        }
+
+        /**
+         * Função auxiliar para receber um vetor de números
+         * e reconstruir a lista UL no HTML.
+         */
+        function atualizarListaComVetor(vetor) {
+            const listaUI = document.getElementById('valores');
+            
+            // e) Utilizar os operadores map e reduce
+            
+            // 1. Map: Transforma o vetor de números [3, 1, 2]
+            // em um vetor de strings HTML ["<li>3</li>", "<li>1</li>", "<li>2</li>"]
+            const vetorHtml = vetor.map(valor => `<li>${valor}</li>`);
+            
+            // 2. Reduce: Concatena o vetor de strings em uma única string.
+            // "<li>3</li><li>1</li><li>2</li>"
+            // O "" no final é o valor inicial do acumulador.
+            const htmlFinal = vetorHtml.reduce((acumulador, item) => acumulador + item, "");
+            
+            // 3. Substitui o conteúdo da lista (ul)
+            listaUI.innerHTML = htmlFinal;
+        }
+
+        /**
+         * Implementa a função add, no estilo clássico.
+         */
+        function add() {
+            // a) Capturar o campo de entrada
+            const inputValor = document.getElementById('valor');
+            
+            // b) Capturar a lista
+            const listaValores = document.getElementById('valores');
+            
+            // Pega o valor digitado
+            const valorDigitado = inputValor.value;
+            
+            // Validação simples para não adicionar valor vazio
+            if (valorDigitado === "") {
+                alert("Por favor, digite um número.");
+                return;
+            }
+
+            // c) Criar uma variável node (elemento li)
+            const node = document.createElement('li');
+            
+            // d) Definir um nó de texto e incluí-lo
+            const textNode = document.createTextNode(valorDigitado);
+            node.appendChild(textNode);
+            
+            // e) Adicionar o elemento node à lista valores
+            listaValores.appendChild(node);
+            
+            // Limpa o campo de entrada e coloca o foco nele
+            inputValor.value = "";
+            inputValor.focus();
+        }
+
+        /**
+         * Implementa a função ordenar, no estilo clássico.
+         */
+        function ordenar() {
+            // a) Capturar a lista de seleção
+            const selectAlgoritmo = document.getElementById('algoritmo');
+            
+            // b) Obter o vetor a partir da lista
+            const vetor = obterVetorDaLista();
+            
+            // c) Conteúdo já convertido na função auxiliar
+            
+            // d) Escolher o algoritmo de ordenação adequado
+            switch (selectAlgoritmo.selectedIndex) {
+                case 0: // Bubble Sort
+                    bubble_sort(vetor);
+                    break;
+                case 1: // Selection Sort
+                    selection_sort(vetor);
+                    break;
+                case 2: // Quick Sort
+                    // A função quick_sort precisa do início (0) e fim (length - 1)
+                    quick_sort(vetor, 0, vetor.length - 1);
+                    break;
+            }
+            
+            // e) Utilizar map e reduce para gerar os novos itens
+            atualizarListaComVetor(vetor);
+        }
+
+        /**
+         * Implementa a função misturar, no estilo clássico.
+         */
+        function misturar() {
+            // a) Capturar lista (feito na função auxiliar)
+            
+            // b) Obter o vetor
+            const vetor = obterVetorDaLista();
+            
+            // c) Conteúdo já convertido
+            
+            // d) Aplicar a função shuffle
+            // O 'qtdTrocas' não foi especificado, então vamos usar o 
+            // tamanho do vetor como um bom número para embaralhar.
+            shuffle(vetor, vetor.length);
+            
+            // e) Utilizar map e reduce para gerar os novos itens
+            atualizarListaComVetor(vetor);
+        }
+    </script>
+</body>
+</html>
