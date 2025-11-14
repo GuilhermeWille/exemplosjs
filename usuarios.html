@@ -23,10 +23,9 @@
         
         <div class="row justify-content-center">
 
-            <div classax="card col-md-3 p-2 m-3" 
-                 v-for="(user, index) in users" 
-                 :key="index">
-                
+            <div class="card col-md-3 p-2 m-3" 
+                v-for="(user, index) in users" 
+                    :key="index">
                 <img :src="user.avatar" class="card-img-top" :alt="user.first_name">
                 
                 <div class="card-body">
@@ -59,7 +58,12 @@
                 loadUsers: function() {
                     const apiUrl = 'https://reqres.in/api/users?per_page=10';
                     
-                    fetch(apiUrl)
+                    fetch(apiUrl, {
+                            headers: {
+                                'x-api-key': 'reqres-free-v1' 
+                            }
+                        })
+                        
                         .then(response => response.json())
                         .then(data => {
                             this.users = data.data; 
